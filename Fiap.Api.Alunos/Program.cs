@@ -1,4 +1,5 @@
 using Fiap.Web.Alunos.Data.Contexts;
+using Fiap.Web.Alunos.Data.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,14 @@ builder.Services.AddDbContext<DatabaseContext>(
     opt => opt.UseOracle(connectionString).EnableSensitiveDataLogging(true)
 );
 #endregion
+
+#region Repositorios
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IRepresentanteRepository, RepresentanteRepository>();
+builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
+#endregion
+
+
 
 
 builder.Services.AddControllers();
