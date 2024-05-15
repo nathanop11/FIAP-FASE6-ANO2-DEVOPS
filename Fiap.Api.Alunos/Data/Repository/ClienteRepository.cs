@@ -26,7 +26,8 @@ public class ClienteRepository : IClienteRepository
     public IEnumerable<ClienteModel> GetAllReference(int lastReference, int size)
     {
         var clientes = _context.Clientes.Include(_ => _.Representante)
-                            .Where(c => c.ClienteId >= lastReference)
+                            .Where(c => c.ClienteId > lastReference)
+                            .OrderBy( c => c.ClienteId) 
                             .Take(size)
                             .AsNoTracking()
                             .ToList();

@@ -3,6 +3,7 @@ using Fiap.Web.Alunos.Models;
 using Fiap.Web.Alunos.Services;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Fiap.Api.Alunos.ViewModel;
 
 namespace Fiap.Web.Alunos.Controllers
 {
@@ -19,13 +20,51 @@ namespace Fiap.Web.Alunos.Controllers
             _mapper = mapper;
         }
 
+        //[HttpGet]
+        //public ActionResult<IEnumerable<ClienteViewModel>> Get()
+        //{
+        //    var clientes = _service.ListarClientes();
+        //    var viewModelList = _mapper.Map<IEnumerable<ClienteViewModel>>(clientes);
+        //    return Ok(viewModelList);
+        //}
+
+
+        //[HttpGet]
+        //public ActionResult<IEnumerable<ClientePaginacaoViewModel>> Get([FromQuery] int pagina = 1, [FromQuery] int tamanho = 10 )
+        //{
+        //    var clientes = _service.ListarClientes(pagina,tamanho);
+        //    var viewModelList = _mapper.Map<IEnumerable<ClienteViewModel>>(clientes);
+
+        //    var viewModel = new ClientePaginacaoViewModel
+        //    {
+        //        Clientes = viewModelList,
+        //        CurrentPage = pagina,
+        //        PageSize = tamanho
+        //    };
+
+
+        //    return Ok(viewModel);
+        //}
+
+
         [HttpGet]
-        public ActionResult<IEnumerable<ClienteViewModel>> Get()
+        public ActionResult<IEnumerable<ClientePaginacaoReferenciaViewModel>> Get([FromQuery] int referencia = 0, [FromQuery] int tamanho = 10)
         {
-            var clientes = _service.ListarClientes();
+            var clientes = _service.ListarClientesUltimaReferencia(referencia, tamanho);
             var viewModelList = _mapper.Map<IEnumerable<ClienteViewModel>>(clientes);
-            return Ok(viewModelList);
+
+            var viewModel = new ClientePaginacaoReferenciaViewModel
+            {
+                Clientes = viewModelList,
+                PageSize = tamanho,
+                Ref = referencia,
+                NextRef = viewModelList.Last().ClienteId
+            };
+
+
+            return Ok(viewModel);
         }
+
 
         [HttpGet("{id}")]
         public ActionResult<ClienteViewModel> Get(int id)

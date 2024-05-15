@@ -14,7 +14,7 @@ namespace Fiap.Web.Alunos.Services
 
         public IEnumerable<ClienteModel> ListarClientes() => _repository.GetAll();
 
-        public IEnumerable<ClienteModel> ListarClientes(int pagina = 0, int tamanho = 10)
+        public IEnumerable<ClienteModel> ListarClientes(int pagina = 1, int tamanho = 10)
         {
             return _repository.GetAll(pagina,tamanho);
         }
