@@ -14,6 +14,26 @@ public class ClienteRepository : IClienteRepository
 
     public IEnumerable<ClienteModel> GetAll() => _context.Clientes.Include(c => c.Representante).ToList();
 
+    public IEnumerable<ClienteModel> GetAll(int page, int size)
+    {
+        return _context.Clientes.Include(c => c.Representante)
+                        .Skip( (page - 1) * page  )
+                        .Take( size )
+                        .AsNoTracking()
+                        .ToList();  
+    }
+
+    public IEnumerable<ClienteModel> GetAllReference(int lastReference, int size)
+    {
+        var clientes = _context.Clientes.Include(_ => _.Representante)
+                            .Where(c => c.ClienteId >= lastReference)
+                            .Take(size)
+                            .AsNoTracking()
+                            .ToList();
+
+        return clientes;
+    }
+
     public ClienteModel GetById(int id) => _context.Clientes.Find(id);
 
     public void Add(ClienteModel cliente)
@@ -33,4 +53,6 @@ public class ClienteRepository : IClienteRepository
         _context.Clientes.Remove(cliente);
         _context.SaveChanges();
     }
+
+    
 }

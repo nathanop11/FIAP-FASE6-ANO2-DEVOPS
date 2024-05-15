@@ -66,3 +66,29 @@ INSERT INTO "PF0954"."PedidoProdutos" ("PedidoId", "ProdutoId") VALUES (104, 103
 INSERT INTO "PF0954"."PedidoProdutos" ("PedidoId", "ProdutoId") VALUES (104, 104);
 
 COMMIT;
+
+
+
+DECLARE
+    v_base_year NUMBER := 1970;
+BEGIN
+    FOR i IN 150 .. 299 LOOP
+        INSERT INTO "PF0954"."Clientes" (
+            "ClienteId", 
+            "Nome", 
+            "Email", 
+            "DataNascimento", 
+            "RepresentanteId"
+        ) VALUES (
+            i, 
+            'Cliente ' || TO_CHAR(i), 
+            'cliente' || TO_CHAR(i) || '@email.com', 
+            TO_DATE(v_base_year + MOD(i, 30) || '-01-01', 'YYYY-MM-DD'),  -- Random year from 1970 to 2000
+            100 + MOD(i, 5)  -- Cycles through IDs 100 to 104
+        );
+    END LOOP;
+    COMMIT;
+END;
+
+
+
