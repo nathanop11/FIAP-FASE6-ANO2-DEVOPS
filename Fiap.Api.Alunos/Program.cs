@@ -1,5 +1,6 @@
 using Fiap.Web.Alunos.Data.Contexts;
 using Fiap.Web.Alunos.Data.Repository;
+using Fiap.Web.Alunos.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +19,11 @@ builder.Services.AddScoped<IRepresentanteRepository, RepresentanteRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 #endregion
 
-
+#region Services
+builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<IRepresentanteService, RepresentanteService>();
+builder.Services.AddScoped<IPedidoService, PedidoService>();
+#endregion
 
 
 builder.Services.AddControllers();
