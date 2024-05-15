@@ -3,11 +3,13 @@ using Fiap.Web.Alunos.Models;
 using Fiap.Web.Alunos.Services;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Fiap.Web.Alunos.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class RepresentanteController : ControllerBase
     {
         private readonly IRepresentanteService _service;
@@ -20,6 +22,7 @@ namespace Fiap.Web.Alunos.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "operador,analista,gerente")]
         public ActionResult<IEnumerable<RepresentanteViewModel>> Get()
         {
             var representantes = _service.ListarRepresentantes();
@@ -28,6 +31,7 @@ namespace Fiap.Web.Alunos.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "operador,analista,gerente")]
         public ActionResult<RepresentanteViewModel> Get(int id)
         {
             var representante = _service.ObterRepresentantePorId(id);
@@ -39,6 +43,7 @@ namespace Fiap.Web.Alunos.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "gerente,analista")]
         public ActionResult Post([FromBody] RepresentanteViewModel viewModel)
         {
             var representante = _mapper.Map<RepresentanteModel>(viewModel);
@@ -47,6 +52,7 @@ namespace Fiap.Web.Alunos.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "gerente")]
         public ActionResult Put(int id, [FromBody] RepresentanteViewModel viewModel)
         {
             var representanteExistente = _service.ObterRepresentantePorId(id);
@@ -59,6 +65,7 @@ namespace Fiap.Web.Alunos.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "gerente")]
         public ActionResult Delete(int id)
         {
             _service.DeletarRepresentante(id);

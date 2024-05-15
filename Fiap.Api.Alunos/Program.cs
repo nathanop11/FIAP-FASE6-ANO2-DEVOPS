@@ -1,10 +1,14 @@
 using AutoMapper;
+using Fiap.Api.Alunos.Services;
 using Fiap.Web.Alunos.Data.Contexts;
 using Fiap.Web.Alunos.Data.Repository;
 using Fiap.Web.Alunos.Models;
 using Fiap.Web.Alunos.Services;
 using Fiap.Web.Alunos.ViewModel;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +30,7 @@ builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<IRepresentanteService, RepresentanteService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 #endregion
 
 
@@ -71,8 +76,26 @@ IMapper mapper = mapperConfig.CreateMapper();
 
 // Registra o IMapper como um serviço singleton no container de DI do ASP.NET Core
 builder.Services.AddSingleton(mapper);
-
 #endregion
+
+
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("f+ujXAKHk00L5jlMXo2XhAWawsOoihNP1OiAM25lLSO57+X7uBMQgwPju6yzyePi")),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
