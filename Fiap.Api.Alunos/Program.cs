@@ -45,7 +45,11 @@ var mapperConfig = new AutoMapper.MapperConfiguration(c => {
     c.CreateMap<PedidoProdutoModel, PedidoProdutoViewModel>();
     c.CreateMap<ProdutoModel, ProdutoViewModel>();
     c.CreateMap<RepresentanteModel, RepresentanteViewModel>();
+
     c.CreateMap<ClienteViewModel, ClienteModel>();
+    c.CreateMap<ClienteCreateViewModel, ClienteModel>();
+    c.CreateMap<ClienteUpdateViewModel, ClienteModel>();
+
     c.CreateMap<FornecedorViewModel, FornecedorModel>();
     c.CreateMap<LojaViewModel, LojaModel>();
     c.CreateMap<PedidoModel, PedidoViewModel>();
