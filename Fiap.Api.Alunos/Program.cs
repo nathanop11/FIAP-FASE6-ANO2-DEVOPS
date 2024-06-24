@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
+using Fiap.Web.Alunos.Data.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,11 +25,14 @@ builder.Services.AddDbContext<DatabaseContext>(
 
 #region Repositorios
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 #endregion
 
 #region Services
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+
 #endregion
 
 

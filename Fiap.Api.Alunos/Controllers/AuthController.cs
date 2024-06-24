@@ -1,5 +1,7 @@
-﻿using Fiap.Web.Alunos.Models;
+﻿using Fiap.Web.Alunos.Data.Contexts;
 using Fiap.Web.Alunos.Services;
+using Fiap.Web.Alunos.Models;
+using Fiap.Api.Alunos.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,9 +16,9 @@ namespace Fiap.Web.Alunos.Controllers
     {
         private readonly AuthService _authService;
 
-        public AuthController()
+        public AuthController(AuthService authService)
         {
-            _authService = new AuthService(); // Em um cenário real, isso deve ser injetado via DI
+            _authService = authService; // Em um cenário real, isso deve ser injetado via DI
         }
 
         [HttpPost("login")]
