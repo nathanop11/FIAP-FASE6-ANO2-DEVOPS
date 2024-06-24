@@ -26,6 +26,10 @@ builder.Services.AddDbContext<DatabaseContext>(
 #region Repositorios
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICameraRepository, CameraRepository>();
+builder.Services.AddScoped<ISensorIncendioRepository, SensorIncendioRepository>();
+builder.Services.AddScoped<IChamadasRepository, ChamadasRepository>();
+
 
 #endregion
 
@@ -33,6 +37,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+
 
 
 #endregion
