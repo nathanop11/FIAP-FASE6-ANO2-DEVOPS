@@ -24,21 +24,23 @@ jobs:
 
       - name: Run tests
         run: dotnet test --no-restore
-        # Armazena o resultado dos testes na variável output.success
         id: test
         continue-on-error: false
 
   create-pr:
     runs-on: ubuntu-latest
-    needs: run-tests # Garante que o PR só seja criado após a execução dos testes
-    if: ${{ success() }} # Somente continua se os testes foram bem-sucedidos
+    needs: run-tests
+    if: ${{ success() }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Log the current branches
+        run: git branch -a
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          branch: dev
+          base: dev # Certifique-se de que está referenciando a branch correta
           title: "Automated PR from feature branch"
           body: "This PR was automatically created after successful tests."
