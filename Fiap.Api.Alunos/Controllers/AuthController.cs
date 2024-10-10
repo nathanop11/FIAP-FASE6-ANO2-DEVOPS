@@ -18,7 +18,7 @@ namespace Fiap.Web.Alunos.Controllers
 
         public AuthController(IAuthService authService)
         {
-            _authService = authService; // Em um cenário real, isso deve ser injetado via DI
+            _authService = authService; 
         }
 
         [HttpPost("login")]

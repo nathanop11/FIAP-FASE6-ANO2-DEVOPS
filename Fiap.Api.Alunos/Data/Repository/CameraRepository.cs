@@ -16,21 +16,21 @@ public class CameraRepository : ICameraRepository
 
     public CameraSegurancaModel GetById(int id) => _context.Camera.Find(id);
 
-    public void Add(CameraSegurancaModel Camera)
+    public void Add(CameraSegurancaModel camera)
     {
-        _context.Camera.Add(Camera);
+        _context.Camera.Add(camera);
         _context.SaveChanges();
     }
 
-    public void Update(CameraSegurancaModel Camera)
+    public void Update(CameraSegurancaModel camera)
     {
-        _context.Update(Camera);
+        _context.Update(camera);
         _context.SaveChanges();
     }
 
-    public void Delete(CameraSegurancaModel Camera)
+    public void Delete(CameraSegurancaModel camera)
     {
-        _context.Camera.Remove(Camera);
+        _context.Camera.Remove(camera);
         _context.SaveChanges();
     }
 

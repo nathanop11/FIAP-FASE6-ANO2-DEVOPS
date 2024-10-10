@@ -7,9 +7,9 @@ namespace Fiap.Web.Alunos.Data.Repository
         IEnumerable<CameraSegurancaModel> GetAll();
 
         CameraSegurancaModel GetById(int id);
-        void Add(CameraSegurancaModel user);
-        void Update(CameraSegurancaModel user);
-        void Delete(CameraSegurancaModel user);
+        void Add(CameraSegurancaModel camera);
+        void Update(CameraSegurancaModel camera);
+        void Delete(CameraSegurancaModel camera);
     }
 
 }

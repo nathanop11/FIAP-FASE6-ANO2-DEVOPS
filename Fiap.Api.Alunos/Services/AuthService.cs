@@ -15,7 +15,6 @@ namespace Fiap.Web.Alunos.Services
 
     public UserModel? Authenticate(string username, string password)
     {
-        // Aqui você pode implementar a lógica de autenticação com segurança adequada, por exemplo, hashing de senha
         return _context.User.FirstOrDefault(u => u.Username == username && u.Password == password);
     }
 }

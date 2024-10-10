@@ -18,17 +18,10 @@ namespace Fiap.Web.Alunos.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetUsers()
+        public ActionResult<IEnumerable<UserModel>> GetUser()
         {
-            try
-            {
-                var users = _userService.ListarUsers();
-                return Ok(users);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Erro interno do servidor: {ex.Message}");
-            }
+            var user = _userService.GetUser();
+            return Ok(user);
         }
 
         [HttpGet("{id}")]

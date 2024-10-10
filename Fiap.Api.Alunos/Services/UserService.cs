@@ -6,16 +6,14 @@ namespace Fiap.Web.Alunos.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _repository;
+        private readonly List<UserModel> _users;
 
-        public UserService(IUserRepository repository)
+        public IEnumerable<UserModel> GetUser()
         {
-            _repository = repository;
+            return _users;
         }
 
         public IEnumerable<UserModel> ListarUsers() => _repository.GetAll();
-
-
-
 
         public UserModel ObterUserPorId(int id) => _repository.GetById(id);
 

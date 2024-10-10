@@ -1,0 +1,44 @@
+# pipeline.yaml
+
+name: Build and Create PR
+
+on:
+  push:
+    branches:
+      - "feature/*"
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Run tests
+        run: dotnet test --no-restore
+        # Armazena o resultado dos testes na variável output.success
+        id: test
+        continue-on-error: false
+
+  create-pr:
+    runs-on: ubuntu-latest
+    needs: run-tests # Garante que o PR só seja criado após a execução dos testes
+    if: ${{ success() }} # Somente continua se os testes foram bem-sucedidos
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          branch: dev
+          title: "Automated PR from feature branch"
+          body: "This PR was automatically created after successful tests."
