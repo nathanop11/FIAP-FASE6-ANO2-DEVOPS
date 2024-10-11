@@ -34,10 +34,21 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: actions/github-script@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }} # Usar o token padrão do GitHub Actions
-          title: "Merge feature branch to developer"
-          body: "This PR merges the feature branch into the developer branch."
-          base: developer
-          head: ${{ github.ref }} # Refere-se à branch atual
+          github-token: ${{ secrets.GITHUB_TOKEN }} # Usar o token padrão do GitHub Actions
+          script: |
+            const { GITHUB_REF, GITHUB_REPOSITORY } = context;
+            const base = "developer";
+            const head = GITHUB_REF.replace("refs/heads/", ""); // Remove o prefixo "refs/heads/"
+            const title = `Merge feature branch ${head} to developer`;
+            const body = `This PR merges the feature branch ${head} into the developer branch.`;
+
+            await github.pulls.create({
+              owner: GITHUB_REPOSITORY.split('/')[0],
+              repo: GITHUB_REPOSITORY.split('/')[1],
+              title: title,
+              head: head,
+              base: base,
+              body: body,
+            });
