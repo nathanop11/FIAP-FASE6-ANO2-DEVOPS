@@ -40,10 +40,19 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: actions/github-script@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }} # Usar o token padrão do GitHub Actions
-          title: "Merge feature branch to developer"
-          body: "This PR merges the feature branch into the developer branch."
-          base: developer
-          head: ${{ github.ref }} # Refere-se à branch atual
+          script: |
+            const { exec } = require('@actions/exec');
+            await exec('git', ['checkout', 'developer']);
+            await exec('git', ['merge', 'feature/${{ github.ref }}']);
+
+            const response = await github.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Automated PR for feature/${{ github.ref }}',
+              head: '${{ github.ref }}',
+              base: 'developer',
+              body: 'This PR was created automatically by the workflow.',
+            });
+            console.log(`Pull request created: ${response.data.html_url}`);
