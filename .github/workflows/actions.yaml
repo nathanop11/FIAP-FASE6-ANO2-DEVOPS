@@ -43,15 +43,11 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const { exec } = require('@actions/exec');
-            await exec('git', ['checkout', 'developer']);
-            await exec('git', ['merge', 'feature/${{ github.ref }}']);
-
             const response = await github.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: 'Automated PR for feature/${{ github.ref }}',
-              head: '${{ github.ref }}',
+              title: `Automated PR for feature/${{ github.ref }}`,
+              head: `${{ github.ref }}`,
               base: 'developer',
               body: 'This PR was created automatically by the workflow.',
             });
