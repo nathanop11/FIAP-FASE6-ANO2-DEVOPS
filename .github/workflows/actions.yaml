@@ -41,6 +41,6 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          base: dev # Certifique-se de que está referenciando a branch correta
+          base: developer # Certifique-se de que está referenciando a branch correta
           title: "Automated PR from feature branch"
           body: "This PR was automatically created after successful tests."
