@@ -1,5 +1,3 @@
-# pipeline.yaml
-
 name: Build and Create PR
 
 on:
@@ -38,9 +36,17 @@ jobs:
       - name: Log the current branches
         run: git branch -a
 
+      - name: Debug Info
+        run: |
+          echo "Current Branch: $(git rev-parse --abbrev-ref HEAD)"
+          echo "Base Branch: developer"
+          echo "Feature Branch: feature/testes"
+          echo "Git Status: $(git status)"
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
-          base: developer # Certifique-se de que está referenciando a branch correta
+          base: developer
+          head: feature/testes # Adicionado para indicar de onde criar o PR
           title: "Automated PR from feature branch"
           body: "This PR was automatically created after successful tests."
