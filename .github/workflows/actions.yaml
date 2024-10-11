@@ -1,4 +1,4 @@
-name: Build and Create PR
+name: Run .NET Tests and Create PR
 
 on:
   push:
@@ -28,25 +28,23 @@ jobs:
   create-pr:
     runs-on: ubuntu-latest
     needs: run-tests
-    if: ${{ success() }}
+    if: success() # Apenas cria o PR se os testes forem bem-sucedidos
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Log the current branches
-        run: git branch -a
-
-      - name: Debug Info
-        run: |
-          echo "Current Branch: $(git rev-parse --abbrev-ref HEAD)"
-          echo "Base Branch: developer"
-          echo "Feature Branch: feature/testes"
-          echo "Git Status: $(git status)"
-
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: actions/github-script@v6
         with:
-          base: developer
-          head: feature/testes # Adicionado para indicar de onde criar o PR
-          title: "Automated PR from feature branch"
-          body: "This PR was automatically created after successful tests."
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const headBranch = context.ref.replace('refs/heads/', ''); // Obtém apenas o nome do branch
+            const response = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Automated PR for feature/${headBranch}`,
+              head: headBranch, // Pega o nome do branch
+              base: 'developer',
+              body: 'This PR was created automatically by the workflow.',
+            });
+            console.log(`Pull request created: ${response.data.html_url}`);
