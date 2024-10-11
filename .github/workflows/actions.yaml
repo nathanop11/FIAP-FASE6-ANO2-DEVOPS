@@ -38,14 +38,19 @@ jobs:
       - name: Log the current branches
         run: git branch -a
 
+      - name: Checkout developer branch
+        run: |
+          git fetch origin developer
+          git checkout developer
+
       - name: Check differences
-        run: git diff dev...${{ github.ref }} # Verifica diferenças entre branches
+        run: git diff origin/developer...${{ github.ref }} # Verifica diferenças entre branches
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          base: dev
+          base: developer
           head: ${{ github.ref }}
           title: "Automated PR from feature branch"
           body: "This PR was automatically created after successful tests."
