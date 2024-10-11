@@ -38,14 +38,13 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            const headBranch = context.ref.replace('refs/heads/', ''); // Obtém apenas o nome do branch
             const response = await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `Automated PR for feature/${{ github.head_ref }}`,
-              head: `${{ github.head_ref }}`, // Pega o nome do branch
+              title: `Automated PR for feature/${headBranch}`,
+              head: headBranch, // Pega o nome do branch
               base: 'developer',
               body: 'This PR was created automatically by the workflow.',
             });
             console.log(`Pull request created: ${response.data.html_url}`);
-    permissions:
-      pull-requests: write # Adicione esta linha para conceder permissões de escrita para pull requests
