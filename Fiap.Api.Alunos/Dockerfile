@@ -1,25 +1,37 @@
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
+# Etapa de base - Define o runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
+# Etapa de build - Prepara a compilação
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+
+# Copia os arquivos de projeto (somente o .csproj) e restaura as dependências
 COPY ["Fiap.Api.Alunos/Fiap.Api.Alunos.csproj", "Fiap.Api.Alunos/"]
-RUN dotnet restore "./Fiap.Api.Alunos/Fiap.Api.Alunos.csproj"
+RUN dotnet restore "Fiap.Api.Alunos/Fiap.Api.Alunos.csproj"
+
+# Copia todo o restante do código para o container
 COPY . .
+
+# Define o diretório do projeto
 WORKDIR "/src/Fiap.Api.Alunos"
-RUN dotnet build "./Fiap.Api.Alunos.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Fiap.Api.Alunos.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+# Realiza o build da aplicação
+RUN dotnet build "Fiap.Api.Alunos.csproj" -c Release -o /app/build
 
+# Publica a aplicação
+RUN dotnet publish "Fiap.Api.Alunos.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Etapa final - Prepara a execução
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+# Copia os artefatos publicados da etapa de build
+COPY --from=build /app/publish .
+
+# Comando de entrada para iniciar a aplicação
 ENTRYPOINT ["dotnet", "Fiap.Api.Alunos.dll"]
