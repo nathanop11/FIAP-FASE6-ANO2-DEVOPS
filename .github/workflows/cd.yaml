@@ -4,7 +4,7 @@ on:
       - developer
 
 env:
-  IMAGE_NAME: fiapapiatv
+  IMAGE_NAME: fiap-devops-atv06
   AZURE_WEBAPP_NAME: fiap-devops-dotnet
 
 jobs:
