@@ -1,37 +1,24 @@
-# Etapa de base - Define o runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
-EXPOSE 8081
 
-# Etapa de build - Prepara a compilação
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ENV ASPNETCORE_URLS=http://+:8080
+
+USER app
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG configuration=Release
 WORKDIR /src
-
-# Copia os arquivos de projeto (somente o .csproj) e restaura as dependências
 COPY ["Fiap.Api.Alunos/Fiap.Api.ATV.csproj", "Fiap.Api.Alunos/"]
 RUN dotnet restore "Fiap.Api.Alunos/Fiap.Api.ATV.csproj"
-
-# Copia todo o restante do código para o container
-COPY Fiap.Api.Alunos/. .
-
-# Define o diretório do projeto
+COPY . .
 WORKDIR "/src/Fiap.Api.Alunos"
+RUN dotnet build "Fiap.Api.ATV.csproj" -c $configuration -o /app/build
 
+FROM build AS publish
+ARG configuration=Release
+RUN dotnet publish "Fiap.Api.ATV.csproj" -c $configuration -o /app/publish /p:UseAppHost=false
 
-# Realiza o build da aplicação
-# Altere isso conforme necessário
-RUN dotnet build "Fiap.Api.ATV.csproj" -c Release -o /app/build
-
-# Publica a aplicação
-RUN dotnet publish "Fiap.Api.ATV.csproj" -c Release -o /app/publish /p:UseAppHost=false
-
-# Etapa final - Prepara a execução
 FROM base AS final
 WORKDIR /app
-
-# Copia os artefatos publicados da etapa de build
-COPY --from=build /app/publish .
-
-# Comando de entrada para iniciar a aplicação
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Fiap.Api.ATV.dll"]

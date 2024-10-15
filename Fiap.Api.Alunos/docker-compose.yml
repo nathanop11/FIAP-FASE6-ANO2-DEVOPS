@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  seu-servico:
+    image: seu-imagem:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80" # Ajuste as portas conforme necessário
