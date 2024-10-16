@@ -1,0 +1,71 @@
+name: Build, Deploy and Create PR for Merge main
+
+on:
+  push:
+    branches:
+      - developer
+
+env:
+  IMAGE_NAME: fiap-devops-atv06
+  AZURE_WEBAPP_NAME: teste-devops-fiap06
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: "teste-devops-fiap06"
+          publish-profile: ${{ secrets.AZURE_PROFILE }}
+          images: "index.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest"
+
+  create-pr:
+    runs-on: ubuntu-latest
+    needs: deploy
+    if: success() # Apenas cria o PR se os testes forem bem-sucedidos
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create Pull Request
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const headBranch = context.ref.replace('refs/heads/', ''); // Obtém apenas o nome do branch
+            const response = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Automated PR for feature/${headBranch}`,
+              head: headBranch, // Pega o nome do branch
+              base: 'main',
+              body: 'This PR was created automatically by the workflow.',
+            });
+            console.log(`Pull request created: ${response.data.html_url}`);

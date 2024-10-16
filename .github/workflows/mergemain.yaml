@@ -1,0 +1,32 @@
+name: Create Pull Request main
+
+on:
+  workflow_run:
+    workflows: ["Build and Deploy"]
+    types:
+      - completed
+  workflow_dispatch: # Permite execução manual
+
+jobs:
+  create-pr:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create Pull Request
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const headBranch = 'developer';
+            const response = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Automated PR for feature/${headBranch}`,
+              head: headBranch,
+              base: 'main',
+              body: 'This PR was created automatically by the workflow.',
+            });
+            console.log(`Pull request created: ${response.data.html_url}`);
