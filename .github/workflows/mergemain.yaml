@@ -1,6 +1,9 @@
 name: Create Pull Request main
 
 on:
+  push:
+    branches:
+      - developer
   workflow_run:
     workflows: ["Build and Deploy"] # Nome do outro workflow
     types:
