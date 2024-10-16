@@ -1,17 +1,15 @@
 name: Create Pull Request main
 
 on:
-  push:
-    branches:
-      - developer
   workflow_run:
-    workflows: ["Build and Deploy"] # Nome do outro workflow
+    workflows: ["Build and Deploy"]
     types:
       - completed
+  workflow_dispatch: # Permite execução manual
 
 jobs:
   create-pr:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }} # Executa apenas se o workflow anterior for bem-sucedido
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -22,12 +20,12 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const headBranch = context.ref.replace('refs/heads/', ''); // Obtém apenas o nome do branch
+            const headBranch = 'developer';
             const response = await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `Automated PR for feature/${headBranch}`,
-              head: headBranch, // Pega o nome do branch
+              head: headBranch,
               base: 'main',
               body: 'This PR was created automatically by the workflow.',
             });
