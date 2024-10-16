@@ -1,4 +1,4 @@
-name: Build, Deploy and Create PR for Merge main
+name: Build, Deploy and Create PR main
 
 on:
   push:
@@ -63,7 +63,7 @@ jobs:
             const response = await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `Automated PR for feature/${headBranch}`,
+              title: `Automated PR for main`,
               head: headBranch, // Pega o nome do branch
               base: 'main',
               body: 'This PR was created automatically by the workflow.',

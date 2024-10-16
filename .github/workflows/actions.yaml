@@ -42,7 +42,7 @@ jobs:
             const response = await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `Automated PR for feature/${headBranch}`,
+              title: `Automated PR for developer`,
               head: headBranch, // Pega o nome do branch
               base: 'developer',
               body: 'This PR was created automatically by the workflow.',
