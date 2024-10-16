@@ -1,3 +1,5 @@
+name: Build and Deploy
+
 on:
   push:
     branches:
@@ -5,7 +7,7 @@ on:
 
 env:
   IMAGE_NAME: fiap-devops-atv06
-  AZURE_WEBAPP_NAME: fiap-devops-dotnet
+  AZURE_WEBAPP_NAME: teste-devops-fiap06
 
 jobs:
   build:
@@ -40,6 +42,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: "fiap-devops-dotnet"
+          app-name: "teste-devops-fiap06"
           publish-profile: ${{ secrets.AZURE_PROFILE }}
           images: "ghcr.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest"
